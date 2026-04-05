@@ -1,0 +1,17 @@
+torch
+torchvision
+torchaudio
+timm
+torch-lr-finder
+ttach
+onnx
+onnxruntime
+onnxconverter-common
+opencv-python
+matplotlib
+numpy
+scikit-learn
+seaborn
+tqdm
+tensorboard
+pillow
