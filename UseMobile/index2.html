@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Scanner PRO - ONNX GPU Engine</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.all.min.js"></script>
+    
+    <style>
+        body { background: black; color: white; text-align: center; margin: 0; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+        video { width: 100vw; height: 100vh; object-fit: cover; transform: scaleX(-1); }
+        
+        #result { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 60px; font-weight: bold; color: lime; background: rgba(0,0,0,0.7);
+            padding: 30px 60px; border-radius: 30px; text-transform: uppercase;
+            z-index: 10; pointer-events: none; border: 3px solid lime;
+            display: block;
+        }
+
+        #fps {
+            position: fixed; top: 15px; right: 15px;
+            background: rgba(0, 0, 0, 0.8); color: #00ffcc;
+            padding: 10px 15px; border-radius: 10px; font-family: monospace;
+            font-size: 18px; font-weight: bold; z-index: 20; border: 1px solid #00ffcc;
+        }
+        
+        #log { position: fixed; bottom: 15px; width: 100%; color: #ccc; font-size: 14px; z-index: 5; background: rgba(0,0,0,0.5); padding: 8px 0; }
+    </style>
+</head>
+<body>
+    <div id="fps">FPS: 0</div>
+    <video id="webcam" autoplay playsinline muted></video>
+    <div id="result">YÜKLENİYOR...</div>
+    <div id="log">Sistem Hazırlanıyor...</div>
+
+    <script>
+        const LABELS = ["apple", "aquarium_fish", "baby", "bear", "beaver", "bed", "bee", "beetle", "bicycle", "bottle", "bowl", "boy", "bridge", "bus", "butterfly", "camel", "can", "castle", "caterpillar", "cattle", "chair", "chimpanzee", "clock", "cloud", "cockroach", "couch", "crab", "crocodile", "cup", "dinosaur", "dolphin", "elephant", "flatfish", "forest", "fox", "girl", "hamster", "house", "kangaroo", "keyboard", "lamp", "lawn_mower", "leopard", "lion", "maple_tree", "motorcycle", "mountain", "mouse", "mushroom", "oak_tree", "orange", "orchid", "otter", "palm_tree", "pear", "pickup_truck", "pine_tree", "plain", "plate", "poppy", "porcupine", "possum", "rabbit", "raccoon", "ray", "road", "rocket", "rose", "sea", "seal", "shark", "shrew", "skunk", "skyscraper", "snail", "snake", "spider", "squirrel", "streetcar", "sunflower", "sweet_pepper", "table", "tank", "telephone", "television", "tiger", "tractor", "train", "trout", "tulip", "turtle", "wardrobe", "whale", "willow_tree", "wolf", "woman", "worm"];
+
+        let session;
+        let inputName;
+        let isProcessing = false; // FPS Hilesi 1: Üst üste binmeyi engeller
+        let lastTime = performance.now();
+        let frames = 0;
+
+        // FPS Hilesi 2: Hızlı boyutlandırma için gizli canvas
+        const canvas = document.createElement('canvas');
+        canvas.width = 224;
+        canvas.height = 224;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+        async function init() {
+            const video = document.getElementById('webcam');
+            const resultDiv = document.getElementById('result');
+            const logDiv = document.getElementById('log');
+            const fpsDiv = document.getElementById('fps');
+
+            try {
+                // KAMERA BAŞLATMA
+                logDiv.innerText = "Kamera açılıyor...";
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "environment" }, 
+                    audio: false 
+                });
+                video.srcObject = stream;
+                // Videonun başlamasını bekle
+                await new Promise((resolve) => { video.onloadedmetadata = resolve; });
+
+                // ONNX MODELİNİ GPU İLE YÜKLE
+                logDiv.innerText = "ONNX Model (GPU) Yükleniyor...";
+                
+                // executionProviders listesindeki ilk desteklenen motor seçilir.
+                // WebGPU en hızlısıdır, yoksa WebGL'e, o da yoksa mecbur WASM'a (CPU) geçer.
+                session = await ort.InferenceSession.create('model_v1_mobile.onnx', { 
+                    executionProviders: ['webgpu', 'webgl', 'wasm'],
+                    graphOptimizationLevel: 'all'
+                });
+
+                // Modelin giriş kapısının ismini otomatik bul (Örn: 'input' veya 'images')
+                inputName = session.inputNames[0];
+                logDiv.innerText = "SİSTEM AKTİF (ONNX - " + session.executionProviders[0].toUpperCase() + ")";
+
+                // DÖNGÜYÜ BAŞLAT
+                function predictLoop() {
+                    const now = performance.now();
+                    
+                    if (now >= lastTime + 1000) {
+                        fpsDiv.innerText = "FPS: " + frames;
+                        frames = 0;
+                        lastTime = now;
+                    }
+
+                    // Eğer GPU o an meşgulse yeni kareyi atla (Telefonun kasmasını engeller)
+                    if (!isProcessing) {
+                        isProcessing = true;
+                        runInference(video, resultDiv).finally(() => {
+                            frames++;
+                            isProcessing = false;
+                        });
+                    }
+
+                    // Kamera akışını durdurmamak için sürekli çağır
+                    requestAnimationFrame(predictLoop);
+                }
+
+                predictLoop();
+
+            } catch (error) {
+                logDiv.innerText = "HATA: " + error.message;
+                console.error(error);
+            }
+        }
+
+        async function runInference(video, resultDiv) {
+            // 1. Görüntüyü inanılmaz hızlı bir şekilde 224x224 yap
+            ctx.drawImage(video, 0, 0, 224, 224);
+            const imageData = ctx.getImageData(0, 0, 224, 224).data;
+            
+            // 2. Piksel verisini ONNX'in istediği Float32 Tensor Formatına çevir
+            // Çoğu ONNX modeli NCHW (1, 3, 224, 224) formatı bekler.
+            const float32Data = new Float32Array(3 * 224 * 224);
+            const size = 224 * 224;
+            
+            for (let i = 0; i < size; i++) {
+                // [0-255] arasını [0-1] arasına çekiyoruz (div 255.0 işlemi)
+                float32Data[i] = imageData[i * 4] / 255.0;            // Kırmızı (R)
+                float32Data[i + size] = imageData[i * 4 + 1] / 255.0;     // Yeşil (G)
+                float32Data[i + 2 * size] = imageData[i * 4 + 2] / 255.0; // Mavi (B)
+            }
+
+            const tensor = new ort.Tensor('float32', float32Data, [1, 3, 224, 224]);
+
+            // 3. Modeli Çalıştır (Ekran kartında hesaplanır)
+            const feeds = { [inputName]: tensor };
+            const results = await session.run(feeds);
+            
+            // 4. Sonuçları Çözümle
+            const outputName = session.outputNames[0];
+            const outputArray = results[outputName].data;
+
+            // En yüksek olasılığa sahip sınıfı bul
+            let maxProb = -1;
+            let maxIndex = -1;
+            for (let i = 0; i < outputArray.length; i++) {
+                if (outputArray[i] > maxProb) {
+                    maxProb = outputArray[i];
+                    maxIndex = i;
+                }
+            }
+
+            if (maxIndex !== -1 && LABELS[maxIndex]) {
+                resultDiv.innerText = LABELS[maxIndex];
+            } else {
+                resultDiv.innerText = "BİLİNMİYOR";
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

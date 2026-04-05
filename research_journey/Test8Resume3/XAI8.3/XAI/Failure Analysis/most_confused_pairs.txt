@@ -1,0 +1,22 @@
+True Class           Predicted As         Errors
+-------------------- -------------------- ------
+oak_tree             maple_tree               19
+girl                 boy                      16
+girl                 woman                    16
+maple_tree           oak_tree                 15
+boy                  man                      13
+man                  boy                      12
+otter                seal                     12
+pine_tree            oak_tree                 12
+willow_tree          maple_tree               12
+oak_tree             pine_tree                11
+woman                girl                     11
+seal                 otter                    10
+woman                man                      10
+baby                 boy                       9
+man                  woman                     9
+maple_tree           willow_tree               9
+tulip                poppy                     9
+baby                 girl                      8
+bowl                 plate                     8
+boy                  girl                      8
