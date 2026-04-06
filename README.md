@@ -146,8 +146,6 @@ Pretrained weights stay in pretrained_weights/; training outputs always go to th
 
 # CIFAR-100 Classification with EfficientNet-V2 (92.20% Acc)
 
-![Training Metrics](assets/accuracy_loss_curves.png)
-
 ## 📊 Performance Analysis
 Aşağıda modelin eğitim sürecindeki başarımı ve sınıflandırma performansını görebilirsiniz:
 
@@ -155,8 +153,6 @@ Aşağıda modelin eğitim sürecindeki başarımı ve sınıflandırma performa
   <img src="assets/confusion_matrix_top20.png" width="450" title="Confusion Matrix">
   <img src="assets/gradcam_sample_01_correct.png" width="450" title="Model Prediction">
 </p>
-
-<img src="YOUR_GRADCAM_URL" width="900"/>
 
 ### Top-20 Most Confused Class Pairs
 
