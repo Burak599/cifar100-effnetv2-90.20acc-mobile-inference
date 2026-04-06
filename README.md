@@ -144,23 +144,15 @@ Pretrained weights stay in pretrained_weights/; training outputs always go to th
 
 ### GradCAM — Sample Prediction
 
-# CIFAR-100 Classification with EfficientNet-V2 (92.20% Acc)
-
-## 📊 Performance Analysis
-Aşağıda modelin eğitim sürecindeki başarımı ve sınıflandırma performansını görebilirsiniz:
-
-<p align="center">
-  <img src="assets/confusion_matrix_top20.png" width="450" title="Confusion Matrix">
-  <img src="assets/gradcam_sample_01_correct.png" width="450" title="Model Prediction">
-</p>
+<img src="assets/gradcam_sample_01_correct.png" width="450">
 
 ### Top-20 Most Confused Class Pairs
 
-<img src="YOUR_CONFUSED_PAIRS_URL" width="700"/>
+<img src="assets/most_confused_pairs.png" width="700"/>
 
 ### Confusion Matrix
 
-<img src="YOUR_CONFUSION_MATRIX_URL" width="700"/>
+<img src="assets/confusion_matrix_top20.png" width="700">
 
 ---
 
