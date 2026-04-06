@@ -1,6 +1,0 @@
-data/
-*.tar.gz
-*.onnx
-runs/
-__pycache__/
-*.pth
