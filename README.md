@@ -25,7 +25,7 @@ The model was iteratively refined across **14 training stages** — from an 81.1
 | **Weight Averaging** | Stochastic Weight Averaging (SWA) across best checkpoints |
 | **Explainability** | GradCAM + Confusion Matrix + Most Confused Pairs |
 | **Export** | PyTorch (.pth) → ONNX FP32 → ONNX FP16 (38 MB) |
-| **Deployment** | Live browser inference via WebGPU / WebGL / WASM fallback |
+| **Deployment** | Live browser inference via WebGL fallback |
 
 ---
 
