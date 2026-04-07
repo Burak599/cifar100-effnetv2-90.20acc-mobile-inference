@@ -103,7 +103,7 @@ pip install -r requirements.txt
 
 **4. Download pre-trained weights**
 
-All weights are hosted on HuggingFace: https://huggingface.co/brk9999/efficientnetv2-s-cifar100-fp16
+All weights are hosted on HuggingFace: https://huggingface.co/brk9999/efficientnetv2-s-cifar100
 
 ```bash
 pip install huggingface_hub
