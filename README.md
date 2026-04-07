@@ -44,9 +44,9 @@ CIFAR100Project/
 │   └── Code/
 │       ├── Quantization.py
 │       └── QuantizationTest.py
-├── LastModelTest(FP16)/
+├── ModelLastTest/
 │   └── Code/
-│       └── best_model_fp16Test.py
+│       └── best_model_Test.py
 ├── research_journey/
 │   ├── test1/ ... test8.4/
 │   │   └── Code/
