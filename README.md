@@ -121,6 +121,22 @@ Pretrained weights stay in pretrained_weights/; training outputs always go to th
 
 ---
 
+## 📊 ModelAccTest
+
+**1. Navigate to the test directory**
+
+```bash
+cd ModelLastTest
+```
+
+**2. Run the accuracy evaluation script**
+
+```bash
+python best_model_Test.py
+```
+
+---
+
 ## 📊 Results
 
 ### Validation Accuracy Evolution
