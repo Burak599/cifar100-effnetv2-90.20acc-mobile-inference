@@ -1,162 +1,402 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Scanner PRO - ONNX GPU Engine</title>
-    
-    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.all.min.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.0/dist/ort.all.min.js"></script>
     <style>
-        body { background: black; color: white; text-align: center; margin: 0; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
-        video { width: 100vw; height: 100vh; object-fit: cover; transform: scaleX(-1); }
-        
-        #result { 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: black; color: white; text-align: center; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+        video { width: 100vw; height: 100vh; object-fit: cover; display: block; }
+        #result {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             font-size: 60px; font-weight: bold; color: lime; background: rgba(0,0,0,0.7);
             padding: 30px 60px; border-radius: 30px; text-transform: uppercase;
             z-index: 10; pointer-events: none; border: 3px solid lime;
-            display: block;
+            max-width: 90vw; word-break: break-word;
         }
-
         #fps {
             position: fixed; top: 15px; right: 15px;
-            background: rgba(0, 0, 0, 0.8); color: #00ffcc;
+            background: rgba(0,0,0,0.8); color: #00ffcc;
             padding: 10px 15px; border-radius: 10px; font-family: monospace;
             font-size: 18px; font-weight: bold; z-index: 20; border: 1px solid #00ffcc;
         }
-        
-        #log { position: fixed; bottom: 15px; width: 100%; color: #ccc; font-size: 14px; z-index: 5; background: rgba(0,0,0,0.5); padding: 8px 0; }
+        #motor {
+            position: fixed; top: 15px; left: 15px;
+            background: rgba(0,0,0,0.8); color: #ffcc00;
+            padding: 10px 15px; border-radius: 10px; font-family: monospace;
+            font-size: 14px; font-weight: bold; z-index: 20; border: 1px solid #ffcc00;
+        }
+        #log {
+            position: fixed; bottom: 15px; width: 90%; left: 5%;
+            color: #ccc; font-size: 13px; z-index: 20;
+            background: rgba(0,0,0,0.85); padding: 12px; border-radius: 10px;
+            word-wrap: break-word; white-space: pre-wrap; max-height: 45vh; overflow-y: auto;
+            border: 1px solid #333;
+        }
+        #progress-bar-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 5px; z-index: 30; background: #111; }
+        #progress-bar { height: 5px; width: 0%; background: lime; transition: width 0.3s; }
     </style>
 </head>
 <body>
-    <div id="fps">FPS: 0</div>
+    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+    <div id="fps">FPS: --</div>
+    <div id="motor">ENGINE: --</div>
     <video id="webcam" autoplay playsinline muted></video>
-    <div id="result">YÜKLENİYOR...</div>
-    <div id="log">Sistem Hazırlanıyor...</div>
+    <div id="result">PREPARING...</div>
+    <div id="log">⏳ System starting...</div>
 
-    <script>
-        const LABELS = ["apple", "aquarium_fish", "baby", "bear", "beaver", "bed", "bee", "beetle", "bicycle", "bottle", "bowl", "boy", "bridge", "bus", "butterfly", "camel", "can", "castle", "caterpillar", "cattle", "chair", "chimpanzee", "clock", "cloud", "cockroach", "couch", "crab", "crocodile", "cup", "dinosaur", "dolphin", "elephant", "flatfish", "forest", "fox", "girl", "hamster", "house", "kangaroo", "keyboard", "lamp", "lawn_mower", "leopard", "lion", "maple_tree", "motorcycle", "mountain", "mouse", "mushroom", "oak_tree", "orange", "orchid", "otter", "palm_tree", "pear", "pickup_truck", "pine_tree", "plain", "plate", "poppy", "porcupine", "possum", "rabbit", "raccoon", "ray", "road", "rocket", "rose", "sea", "seal", "shark", "shrew", "skunk", "skyscraper", "snail", "snake", "spider", "squirrel", "streetcar", "sunflower", "sweet_pepper", "table", "tank", "telephone", "television", "tiger", "tractor", "train", "trout", "tulip", "turtle", "wardrobe", "whale", "willow_tree", "wolf", "woman", "worm"];
+<script>
+// ============================================================
+// SECTION 1 — CONSTANTS
+// ============================================================
+const LABELS = ["apple","aquarium_fish","baby","bear","beaver","bed","bee","beetle","bicycle","bottle","bowl","boy","bridge","bus","butterfly","camel","can","castle","caterpillar","cattle","chair","chimpanzee","clock","cloud","cockroach","couch","crab","crocodile","cup","dinosaur","dolphin","elephant","flatfish","forest","fox","girl","hamster","house","kangaroo","keyboard","lamp","lawn_mower","leopard","lion","maple_tree","motorcycle","mountain","mouse","mushroom","oak_tree","orange","orchid","otter","palm_tree","pear","pickup_truck","pine_tree","plain","plate","poppy","porcupine","possum","rabbit","raccoon","ray","road","rocket","rose","sea","seal","shark","shrew","skunk","skyscraper","snail","snake","spider","squirrel","streetcar","sunflower","sweet_pepper","table","tank","telephone","television","tiger","tractor","train","trout","tulip","turtle","wardrobe","whale","willow_tree","wolf","woman","worm"];
 
-        let session;
-        let inputName;
-        let isProcessing = false; // FPS Hilesi 1: Üst üste binmeyi engeller
-        let lastTime = performance.now();
-        let frames = 0;
+const MODEL_PATH = '../pretrained_weights/model_fp32.onnx';
 
-        // FPS Hilesi 2: Hızlı boyutlandırma için gizli canvas
-        const canvas = document.createElement('canvas');
-        canvas.width = 224;
-        canvas.height = 224;
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+// ============================================================
+// SECTION 2 — DOM
+// ============================================================
+const video       = document.getElementById('webcam');
+const resultDiv   = document.getElementById('result');
+const logDiv      = document.getElementById('log');
+const fpsDiv      = document.getElementById('fps');
+const motorDiv    = document.getElementById('motor');
+const progressBar = document.getElementById('progress-bar');
 
-        async function init() {
-            const video = document.getElementById('webcam');
-            const resultDiv = document.getElementById('result');
-            const logDiv = document.getElementById('log');
-            const fpsDiv = document.getElementById('fps');
+// ============================================================
+// SECTION 3 — PERFORMANCE: All memory is allocated once
+// No new Float32Array() call per inference → zero GC pressure
+// ============================================================
+const canvas = document.createElement('canvas');
+canvas.width = 224;
+canvas.height = 224;
+const ctx = canvas.getContext('2d', { willReadFrequently: true });
+const float32Data = new Float32Array(3 * 224 * 224); // Allocated once
+const SIZE = 224 * 224;
+
+let session      = null;
+let inputName    = null;
+let isProcessing = false;
+let lastTime     = performance.now();
+let frameCount   = 0;
+let stopped      = false;
+let lastInfer = 0;
+const INTERVAL = 100; 
+
+// ============================================================
+// SECTION 4 — LOG & ERROR
+// ============================================================
+function log(msg, color = '#ccc') {
+    console.log(msg);
+    logDiv.style.color = color;
+    logDiv.innerText = msg;
+}
+
+function setProgress(pct) {
+    progressBar.style.width = pct + '%';
+}
+
+function showError(stage, error) {
+    stopped = true;
+    const msg = error?.message || String(error);
+
+    const hints = {
+        'CAMERA': `
+📷 CAMERA ERROR
+──────────────────
+Error: ${msg}
+
+Causes:
+- Camera permission denied → Click the lock icon, grant permission, reload
+- Using HTTP → HTTPS is required
+- Another app is using the camera → Close other applications`,
+
+        'MODEL_FETCH': `
+📦 MODEL FILE COULD NOT BE LOADED
+──────────────────
+Error: ${msg}
+
+Folder structure should be:
+    project/
+    ├── pretrained_weights/
+    │   └── model_fp16.onnx   ← THIS MUST EXIST
+    └── html/
+        └── index.html
+
+- Start the server from the project/ root:
+    cd project && npx serve --cors -l 8080
+- localtunnel bypass → First open this URL and click "Visit Site":
+    ${window.location.origin}/pretrained_weights/model_fp16.onnx`,
+
+        'MODEL_INIT': `
+🧠 MODEL COULD NOT BE INITIALIZED
+──────────────────
+Error: ${msg}
+
+Causes:
+- ONNX file is corrupted → Copy it again
+- WebGPU/WebGL not supported → Use Chrome 113+
+- SharedArrayBuffer missing → If using GitHub Pages,
+  add the following to your _headers file:
+  /*
+    Cross-Origin-Opener-Policy: same-origin
+    Cross-Origin-Embedder-Policy: require-corp`,
+
+        'INFERENCE': `
+⚡ PREDICTION ERROR
+──────────────────
+Error: ${msg}
+
+Causes:
+- GPU memory full → Reload the page
+- LABELS array mismatch → Model must output 100 classes (${LABELS.length} found)
+- Camera frame unavailable → Check camera connection`
+    };
+
+    const hint = hints[stage] || `❌ ERROR (${stage})\n──────────────────\n${msg}\n\n→ Open F12 console.`;
+
+    console.error(`[${stage}]`, error);
+    logDiv.style.color = '#ff4444';
+    logDiv.style.borderColor = 'red';
+    logDiv.innerText = hint;
+    resultDiv.innerText = 'ERROR';
+    resultDiv.style.color = 'red';
+    resultDiv.style.borderColor = 'red';
+    progressBar.style.background = 'red';
+    progressBar.style.width = '100%';
+}
+
+// ============================================================
+// SECTION 5 — DETECT BEST GPU ENGINE
+// Test if WebGPU actually opens; fall back to WebGL if not
+// Never fall back to WASM (CPU)
+// ============================================================
+async function detectBestProvider() {
+    try {
+        if (navigator.gpu) {
+            const adapter = await navigator.gpu.requestAdapter();
+            if (adapter) {
+                motorDiv.innerText = 'ENGINE: WEBGPU';
+                motorDiv.style.color = '#00ff88';
+                log('✅ WebGPU active!', 'lime');
+                return ['webgpu', 'webgl', 'wasm'];
+            }
+        }
+    } catch (e) {}
+
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+
+    if (gl) {
+        motorDiv.innerText = 'ENGINE: WEBGL';
+        motorDiv.style.color = '#ffaa00';
+        log('⚠️ Using WebGL', '#ffaa00');
+        return ['webgl', 'wasm'];
+    }
+
+    motorDiv.innerText = 'ENGINE: CPU';
+    motorDiv.style.color = '#ff4444';
+    log('⚠️ Using CPU (WASM)', '#ff6600');
+    return ['wasm'];
+}
+
+// ============================================================
+// SECTION 6 — CAMERA
+// ============================================================
+async function setupCamera() {
+    log('📷 Starting camera...', '#aaa');
+    setProgress(10);
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error('getUserMedia not supported. HTTPS is required.');
+    }
+
+    let stream;
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
+            audio: false
+        });
+    } catch (e) {
+        log('⚠️ No rear camera, trying front camera...', '#ffaa00');
+        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    }
+
+    video.srcObject = stream;
+    video.autoplay = true;
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+
+    return new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error('Video did not open in 10 seconds')), 10000);
+        video.onloadedmetadata = async () => {
+            clearTimeout(timeout);
+
+            video.muted = true;
+            video.playsInline = true;
 
             try {
-                // KAMERA BAŞLATMA
-                logDiv.innerText = "Kamera açılıyor...";
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: "environment" }, 
-                    audio: false 
-                });
-                video.srcObject = stream;
-                // Videonun başlamasını bekle
-                await new Promise((resolve) => { video.onloadedmetadata = resolve; });
-
-                // ONNX MODELİNİ GPU İLE YÜKLE
-                logDiv.innerText = "ONNX Model (GPU) Yükleniyor...";
-                
-                // executionProviders listesindeki ilk desteklenen motor seçilir.
-                // WebGPU en hızlısıdır, yoksa WebGL'e, o da yoksa mecbur WASM'a (CPU) geçer.
-                session = await ort.InferenceSession.create('model_v1_mobile.onnx', { 
-                    executionProviders: ['webgpu', 'webgl', 'wasm'],
-                    graphOptimizationLevel: 'all'
-                });
-
-                // Modelin giriş kapısının ismini otomatik bul (Örn: 'input' veya 'images')
-                inputName = session.inputNames[0];
-                logDiv.innerText = "SİSTEM AKTİF (ONNX - " + session.executionProviders[0].toUpperCase() + ")";
-
-                // DÖNGÜYÜ BAŞLAT
-                function predictLoop() {
-                    const now = performance.now();
-                    
-                    if (now >= lastTime + 1000) {
-                        fpsDiv.innerText = "FPS: " + frames;
-                        frames = 0;
-                        lastTime = now;
-                    }
-
-                    // Eğer GPU o an meşgulse yeni kareyi atla (Telefonun kasmasını engeller)
-                    if (!isProcessing) {
-                        isProcessing = true;
-                        runInference(video, resultDiv).finally(() => {
-                            frames++;
-                            isProcessing = false;
-                        });
-                    }
-
-                    // Kamera akışını durdurmamak için sürekli çağır
-                    requestAnimationFrame(predictLoop);
-                }
-
-                predictLoop();
-
-            } catch (error) {
-                logDiv.innerText = "HATA: " + error.message;
-                console.error(error);
+                await video.play();
+                resolve();
+            } catch (e) {
+                reject(e);
             }
+        };
+        video.onerror = (e) => { clearTimeout(timeout); reject(e); };
+    });
+}
+
+// ============================================================
+// SECTION 7 — MODEL LOADING
+// ============================================================
+async function setupModel() {
+    log('📦 Loading model...', '#aaa');
+    setProgress(30);
+
+    // =========================
+    // 1. GPU / CPU detect
+    // =========================
+    const providers = await detectBestProvider();
+
+    log(`🧠 Using engine: ${providers[0].toUpperCase()}`, '#aaa');
+    setProgress(50);
+
+    try {
+        // =========================
+        // 2. ORT runtime config
+        // =========================
+        ort.env.wasm.numThreads = navigator.hardwareConcurrency || 4;
+        ort.env.wasm.simd = true;
+
+        // =========================
+        // 3. DIRECT MODEL LOAD (IMPORTANT FIX)
+        // =========================
+        session = await ort.InferenceSession.create(MODEL_PATH, {
+            executionProviders: providers,
+            graphOptimizationLevel: 'all'
+        });
+
+        // =========================
+        // 4. INPUT NAME SAFE READ
+        // =========================
+        inputName = session.inputNames?.[0];
+
+        if (!inputName) {
+            throw new Error("Model input name not found");
         }
 
-        async function runInference(video, resultDiv) {
-            // 1. Görüntüyü inanılmaz hızlı bir şekilde 224x224 yap
-            ctx.drawImage(video, 0, 0, 224, 224);
-            const imageData = ctx.getImageData(0, 0, 224, 224).data;
-            
-            // 2. Piksel verisini ONNX'in istediği Float32 Tensor Formatına çevir
-            // Çoğu ONNX modeli NCHW (1, 3, 224, 224) formatı bekler.
-            const float32Data = new Float32Array(3 * 224 * 224);
-            const size = 224 * 224;
-            
-            for (let i = 0; i < size; i++) {
-                // [0-255] arasını [0-1] arasına çekiyoruz (div 255.0 işlemi)
-                float32Data[i] = imageData[i * 4] / 255.0;            // Kırmızı (R)
-                float32Data[i + size] = imageData[i * 4 + 1] / 255.0;     // Yeşil (G)
-                float32Data[i + 2 * size] = imageData[i * 4 + 2] / 255.0; // Mavi (B)
-            }
+        setProgress(100);
+        log(`✅ Model loaded successfully (${providers[0].toUpperCase()})`, 'lime');
 
-            const tensor = new ort.Tensor('float32', float32Data, [1, 3, 224, 224]);
+    } catch (e) {
+        const err = new Error(e?.message || e);
+        err._stage = 'MODEL_INIT';
+        throw err;
+    }
+}
+function preprocessVideoToTensor() {
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // 3. Modeli Çalıştır (Ekran kartında hesaplanır)
-            const feeds = { [inputName]: tensor };
-            const results = await session.run(feeds);
-            
-            // 4. Sonuçları Çözümle
-            const outputName = session.outputNames[0];
-            const outputArray = results[outputName].data;
+    const pixels = ctx.getImageData(0, 0, 224, 224).data;
 
-            // En yüksek olasılığa sahip sınıfı bul
-            let maxProb = -1;
-            let maxIndex = -1;
-            for (let i = 0; i < outputArray.length; i++) {
-                if (outputArray[i] > maxProb) {
-                    maxProb = outputArray[i];
-                    maxIndex = i;
-                }
-            }
+    let r = 0, g = SIZE, b = SIZE * 2;
 
-            if (maxIndex !== -1 && LABELS[maxIndex]) {
-                resultDiv.innerText = LABELS[maxIndex];
-            } else {
-                resultDiv.innerText = "BİLİNMİYOR";
-            }
+    for (let i = 0; i < pixels.length; i += 4) {
+        float32Data[r++] = (pixels[i]     / 255 - 0.485) / 0.229;
+        float32Data[g++] = (pixels[i + 1] / 255 - 0.456) / 0.224;
+        float32Data[b++] = (pixels[i + 2] / 255 - 0.406) / 0.225;
+    }
+
+    return new ort.Tensor('float32', float32Data, [1, 3, 224, 224]);
+}
+// ============================================================
+// SECTION 8 — INFERENCE
+// Optimizations:
+// 1. float32Data pre-allocated — no new Float32Array per frame
+// 2. ImageNet normalization done inline — no extra arrays
+// 3. ctx.getImageData called once per frame
+// ============================================================
+async function runInference() {
+    console.log(session.inputNames);
+    console.log(session.outputNames);
+    console.log(session.inputMetadata);
+    const tensor = preprocessVideoToTensor();
+
+    const feeds = {};
+    feeds[session.inputNames[0]] = tensor;
+
+    console.log(feeds);
+
+    const results = await session.run(feeds);
+
+    const outputTensor = results[session.outputNames[0]];
+    const output = outputTensor.data;
+
+    let maxVal = -Infinity, maxIdx = -1;
+    for (let i = 0; i < output.length; i++) {
+        if (output[i] > maxVal) {
+            maxVal = output[i];
+            maxIdx = i;
         }
+    }
 
-        window.onload = init;
-    </script>
+    resultDiv.innerText = LABELS[maxIdx] || '?';
+}
+
+// ============================================================
+// SECTION 9 — MAIN LOOP
+// ============================================================
+function predictLoop() {
+    if (stopped) return;
+
+    const now = performance.now();
+    if (now - lastTime >= 1000) {
+        fpsDiv.innerText = `FPS: ${frameCount}`;
+        frameCount = 0;
+        lastTime = now;
+    }
+
+    if (now - lastInfer > INTERVAL && !isProcessing) {
+        lastInfer = now;
+        isProcessing = true;
+
+        runInference()
+            .catch(err => showError('INFERENCE', err))
+            .finally(() => {
+                frameCount++;
+                isProcessing = false;
+            });
+    }
+
+    requestAnimationFrame(predictLoop);
+}
+
+// ============================================================
+// SECTION 10 — INITIALIZER
+// ============================================================
+async function initApp() {
+    try {
+        await setupCamera();
+        setProgress(20);
+    } catch (e) {
+        return showError('CAMERA', e);
+    }
+
+    try {
+        await setupModel();
+    } catch (e) {
+        return showError(e._stage || 'MODEL_INIT', e);
+    }
+
+    resultDiv.innerText = 'SCANNING...';
+    predictLoop();
+}
+
+window.onload = initApp;
+</script>
 </body>
 </html>
