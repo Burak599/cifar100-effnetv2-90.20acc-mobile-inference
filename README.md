@@ -1,7 +1,7 @@
 # EfficientNetV2-S CIFAR-100 — Advanced Optimization & Quantization
 
-A high-accuracy, production-ready deep learning pipeline for CIFAR-100 image classification.
-Achieving **90.20% validation accuracy** with EfficientNetV2-S, SAM optimization, SWA, and ONNX mobile deployment.
+A production-grade EfficientNetV2-S pipeline achieving **90.20% validation accuracy** on CIFAR-100 using advanced optimization techniques including SAM and SWA — with real-time browser inference via ONNX, reaching **near state-of-the-art performance for EfficientNetV2-S**.
+> 🚀 **90.20% Accuracy | Near-SOTA (EfficientNetV2-S) | Real-Time Browser Inference**
 
 ---
 
@@ -12,6 +12,13 @@ This project is a comprehensive deep learning pipeline designed to achieve **hig
 The model was iteratively refined across **14 training stages** — from an 81.13% baseline to a final **90.20% validation accuracy** — using modern augmentation strategies, SAM optimization, and Stochastic Weight Averaging. The final model is exported to **FP32 ONNX** and runs **live in the browser** via a standalone HTML interface with WebGPU acceleration.
 
 ---
+
+## 💡 Why This Project Matters
+
+- Demonstrates **architecture-level optimization** rather than switching to larger models
+- Achieves **near-SOTA performance without transformers**
+- End-to-end pipeline: training → explainability → deployment
+- Runs fully **in-browser with no backend required**
 
 ## 🚀 Key Features
 
@@ -165,9 +172,9 @@ python best_model_Test.py
 
 ---
 
-## 📊 Results
+## 📊 Results — From 81% → 90.20%
 
-### Validation Accuracy Evolution
+### Validation Accuracy Progression
 
 | ID | Val Acc | Key Changes |
 |:---:|:---:|:---|
@@ -208,7 +215,7 @@ Each stage has its own self-contained script, no arguments needed:
 
 ```bash
 # Stage 8.2 — Best single model (89.86%) ⭐
-python "research_journey/Test8/Code/cifar100_test8.py" The model typically reaches its peak validation accuracy between 10-20 epochs
+python "research_journey/Test8/Code/cifar100_test8.py"
 #Run this to view the XAI analysis after training Test 8.
 python "research_journey/Test8/XAI8/XAICode8.py"
 
@@ -222,6 +229,7 @@ python "research_journey/Test8Resume2/XAI8.2/XAICode8.2.py"
 
 
 ---
+
 ##📈 Training Notes
 
 >Early Convergence: The model typically reaches its best validation accuracy within 10-20 epochs (observed in cifar100_test8.py), even though the total training is set to 200 epochs.
@@ -244,9 +252,13 @@ python "Quantization_ONNX/Code/QuantizationTest.py"
 
 ---
 
-## 📱 Mobile Inference
+## 📱 Real-Time Mobile Inference (No Backend)
 
 The model runs **live in the browser** — no server, no Python, no installation required.
+
+- Runs entirely in-browser using ONNX
+- No server or Python required
+- Real-time camera-based classification
 
 ```bash
 cd cifar100-effnetv2-90.20acc-mobile-inference
