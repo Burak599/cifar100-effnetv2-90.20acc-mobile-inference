@@ -23,7 +23,7 @@ PLOT_DIR = os.path.join(BASE_PATH, "user_plots")
 
 # 1. PRETRAINED_WEIGHT_PATH: Move up 2 levels (cd .. / cd ..), enter Test8Resume2, then enter Weights
 # This points to the previously trained model weights to start fine-tuning
-PRETRAINED_WEIGHT_PATH = os.path.abspath(os.path.join(BASE_PATH , "..", "TestResume2", "user_weights", "user_best_model_10.pth"))
+PRETRAINED_WEIGHT_PATH = os.path.abspath(os.path.join(BASE_PATH , "..", "Test8Resume2", "user_weights", "user_best_model_10.pth"))
 
 os.makedirs(WEIGHTS_DIR, exist_ok=True)
 os.makedirs(PLOT_DIR, exist_ok=True)
