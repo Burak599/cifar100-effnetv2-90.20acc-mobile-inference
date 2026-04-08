@@ -60,7 +60,7 @@ os.makedirs(XAI_DIR, exist_ok=True)
 # SETTINGS
 # ===========================================================================
 
-BATCH_SIZE           = 64
+BATCH_SIZE           = 1
 TOP_N_CONFUSED_PAIRS = 20
 GRADCAM_SAMPLES      = 5
 
@@ -116,9 +116,8 @@ def get_gradcam_session(onnx_path: str):
         raise RuntimeError("Could not find a suitable feature map node in the ONNX graph.")
 
     # Add the intermediate node as an extra graph output so ORT can return it
-    # Model is FP16 so we must use FLOAT16 here
     intermediate_output = onnx.helper.make_tensor_value_info(
-        feat_name, onnx.TensorProto.FLOAT16, None
+        feat_name, onnx.TensorProto.FLOAT32, None
     )
     model_onnx.graph.output.append(intermediate_output)
 
@@ -224,13 +223,13 @@ def run_onnx_fp16_test(onnx_path: str):
         val_dataset              : The CIFAR-100 test dataset (reused for Grad-CAM).
     """
     print("\n" + "=" * 60)
-    print("  STEP 1 — FP16 ONNX INFERENCE TEST")
+    print("  STEP 1 — ONNX INFERENCE TEST")
     print("=" * 60)
 
     providers = [('CUDAExecutionProvider', {'device_id': 0}), 'CPUExecutionProvider']
     try:
         session = ort.InferenceSession(onnx_path, providers=providers)
-        print(f"--> FP16 Model loaded: {onnx_path}")
+        print(f"--> Model loaded: {onnx_path}")
     except Exception as e:
         print(f"--> WARNING: CUDA provider failed ({e}), falling back to CPU.")
         session = ort.InferenceSession(onnx_path, providers=['CPUExecutionProvider'])
@@ -255,7 +254,7 @@ def run_onnx_fp16_test(onnx_path: str):
 
     print(f"\nEvaluating {len(val_dataset)} images...\n")
     with torch.no_grad():
-        for inputs, targets in tqdm(val_loader, desc="FP16 Inference"):
+        for inputs, targets in tqdm(val_loader, desc="Inference"):
             inputs_np   = inputs.numpy()
             onnx_inputs = {input_name: inputs_np}
             onnx_out    = session.run(None, onnx_inputs)[0]
@@ -272,7 +271,7 @@ def run_onnx_fp16_test(onnx_path: str):
     accuracy   = 100.0 * correct / total
 
     print(f"\n{'-' * 40}")
-    print(f"  ONNX FP16 PATH  : {onnx_path}")
+    print(f"  ONNX PATH  : {onnx_path}")
     print(f"  TOTAL SAMPLES   : {total}")
     print(f"  CORRECT MATCHES : {correct}")
     print(f"  MODEL ACCURACY  : {accuracy:.2f}%")
@@ -514,7 +513,7 @@ def run_gradcam(all_preds, all_labels, val_dataset, classes, save_dir,
 
 def main():
     print("=" * 60)
-    print("  CIFAR-100 FP16 ONNX TEST + XAI ANALYSIS")
+    print("  CIFAR-100 ONNX TEST + XAI ANALYSIS")
     print("=" * 60)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
