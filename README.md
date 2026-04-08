@@ -135,7 +135,7 @@ Pretrained weights stay in pretrained_weights/; training outputs always go to th
 **1. Navigate to the test directory**
 
 ```bash
-cd ModelLastTest
+cd ModelLastTest/Code
 ```
 
 **2. Run the accuracy evaluation script**
@@ -213,16 +213,6 @@ python "Quantization_ONNX/Code/Quantization.py"
 # Step 4 — Test ONNX FP16
 python "Quantization_ONNX/Code/QuantizationTest.py"
 ```
-
----
-
-## 🔍 Inference
-
-```bash
-python "LastModelTest(FP16)/Code/best_model_fp16Test.py" (90.20%) ⭐
-```
-
-Loads the FP16 ONNX model, runs full evaluation on CIFAR-100 test set, and generates all XAI visualizations. 33333
 
 ---
 
