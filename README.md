@@ -277,6 +277,8 @@ Note!!!: If you encounter a 1033 error when opening the link, please follow thes
 
     Then, run the command: cloudflared tunnel --url http://127.0.0.1:8080 --protocol http2.
 
+Note!!!: If you get a 'load failed' error when opening index.html, stop both trycloudflare and npx serve, then restart them.
+
 - Captures live camera feed and classifies every frame in real time
 - Runs via **WebGL** 
 - Displays predicted class name
