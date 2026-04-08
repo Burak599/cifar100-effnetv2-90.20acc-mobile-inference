@@ -451,7 +451,7 @@ def main():
 
     # --- TensorBoard Writer ---
     current_time = datetime.datetime.now().strftime("%b%d_%H-%M-%S")
-    log_dir = f"user_runs7/baseline_{current_time}"
+    log_dir = os.path.join(BASE_PATH, f"user_runs7/baseline_{current_time}")
     writer = SummaryWriter(log_dir)
 
     # ===================== TRAINING LOOP =====================
