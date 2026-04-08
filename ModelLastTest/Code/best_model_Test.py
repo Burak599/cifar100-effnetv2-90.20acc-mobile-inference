@@ -53,7 +53,7 @@ from tqdm import tqdm
 
 SCRIPT_DIR      = os.path.dirname(os.path.abspath(__file__))
 CHECKPOINT_PATH = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "..", "pretrained_weights", "best_weight", "model_fp32.onnx"))
-XAI_DIR         = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "XAI"))
+XAI_DIR         = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "User_XAI"))
 os.makedirs(XAI_DIR, exist_ok=True)
 
 # ===========================================================================
