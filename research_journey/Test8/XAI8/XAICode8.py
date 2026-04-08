@@ -29,13 +29,13 @@ import cv2
 # ---------------------------------------------------------------------------
 
 # Directory where this script lives
-BASE_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/research_journey/Test8Resume1"
+BASE_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/research_journey/Test8"
 
 # Model checkpoint
-CHECKPOINT_PATH = os.path.join(BASE_PATH, "user_weights", "user_best_model_9.pth")
+CHECKPOINT_PATH = os.path.join(BASE_PATH, "user_weights", "user_best_model_8.pth")
 
 # Output directory for all analysis artefacts
-XAI_DIR = os.path.join(BASE_PATH , "XAI8.1", "User_XAI")
+XAI_DIR = os.path.join(BASE_PATH , "XAI8", "User_XAI")
 os.makedirs(XAI_DIR, exist_ok=True)
 
 # Number of most-confused pairs to display / save
