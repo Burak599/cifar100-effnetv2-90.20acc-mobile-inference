@@ -1,7 +1,7 @@
 # EfficientNetV2-S CIFAR-100 — Advanced Optimization & Quantization
 
-A production-grade EfficientNetV2-S pipeline achieving **90.20% validation accuracy** on CIFAR-100 using advanced optimization techniques including SAM and SWA — with real-time browser inference via ONNX, reaching **near state-of-the-art performance for EfficientNetV2-S**.
-> 🚀 **90.20% Accuracy | Near-SOTA (EfficientNetV2-S) | Real-Time Browser Inference**
+A production-grade EfficientNetV2-S pipeline achieving **90.20% validation accuracy** on CIFAR-100 using advanced optimization techniques including SAM and SWA — with real-time browser inference via ONNX, reaching **SOTA-level performance for EfficientNetV2-S**.
+> 🚀 **90.20% Accuracy | SOTA-level performance for EfficientNetV2-S | Real-Time Browser Inference**
 
 ---
 
@@ -16,7 +16,7 @@ The model was iteratively refined across **14 training stages** — from an 81.1
 ## 💡 Why This Project Matters
 
 - Demonstrates **architecture-level optimization** rather than switching to larger models
-- Achieves **near-SOTA performance without transformers**
+- Achieves **SOTA-level performance for EfficientNetV2-S**
 - End-to-end pipeline: training → explainability → deployment
 - Runs fully **in-browser with no backend required**
 
