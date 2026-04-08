@@ -128,7 +128,8 @@ pip install huggingface_hub
 python -c "
 from huggingface_hub import snapshot_download
 snapshot_download(
-    repo_id='brk9999/efficientnetv2-s-cifar100/best_weight',
+    repo_id='brk9999/efficientnetv2-s-cifar100',
+    allow_patterns='best_weight/*',
     local_dir='pretrained_weights/'
 )
 "
@@ -137,8 +138,9 @@ snapshot_download(
 python -c "
 from huggingface_hub import snapshot_download
 snapshot_download(
-    repo_id='brk9999/efficientnetv2-s-cifar100/research_journey_weights',
-    local_dir='best_weights/'
+    repo_id='brk9999/efficientnetv2-s-cifar100',
+    allow_patterns='research_journey_weights/*',
+    local_dir='pretrained_weights/'
 )
 "
 ```
