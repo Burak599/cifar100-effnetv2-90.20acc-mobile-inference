@@ -99,7 +99,12 @@ source venv/bin/activate      # Linux/macOS
 
 ```bash
 pip install -r requirements
+# Windows:
 npm install -g serve
+# Linux/macOS:
+sudo npm install -g serve
+
+# Open a new terminal and run this command there.
 # windows:
 winget install cloudflare.cloudflared
 
