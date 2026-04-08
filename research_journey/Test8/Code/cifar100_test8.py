@@ -15,11 +15,11 @@ import os
 # --- PATH CONFIGURATION ---
 
 # Get the absolute path of the current directory where the script is located
-current_dir = os.path.dirname(os.path.abspath(__file__))
+BASE_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/research_journey/Test8"
 
 # Define output directories for organization
-WEIGHTS_DIR = "user_weights"
-PLOT_DIR = "user_plots"
+WEIGHTS_DIR = os.path.join(BASE_PATH, "user_weights")
+PLOT_DIR = os.path.join(BASE_PATH, "user_plots")
 
 # Automatically create directories if they do not exist
 os.makedirs(WEIGHTS_DIR, exist_ok=True)
@@ -452,7 +452,7 @@ def main():
 
     # --- TensorBoard Writer ---
     current_time = datetime.datetime.now().strftime("%b%d_%H-%M-%S")
-    log_dir = f"runs8/baseline_{current_time}"
+    log_dir = os.path.join(BASE_PATH, f"user_runs8/baseline_{current_time}")
     writer = SummaryWriter(log_dir)
 
     # ===================== TRAINING LOOP =====================
