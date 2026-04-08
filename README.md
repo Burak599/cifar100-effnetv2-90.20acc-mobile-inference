@@ -1,7 +1,7 @@
 # EfficientNetV2-S CIFAR-100 — Advanced Optimization & Quantization
 
 A high-accuracy, production-ready deep learning pipeline for CIFAR-100 image classification.
-Achieving **90.20% validation accuracy** with EfficientNetV2-S, SAM optimization, SWA, and FP16 ONNX mobile deployment.
+Achieving **90.20% validation accuracy** with EfficientNetV2-S, SAM optimization, SWA, and ONNX mobile deployment.
 
 ---
 
@@ -9,7 +9,7 @@ Achieving **90.20% validation accuracy** with EfficientNetV2-S, SAM optimization
 
 This project is a comprehensive deep learning pipeline designed to achieve **high accuracy** and **low-latency inference** on the CIFAR-100 dataset (100 classes, 60,000 images) using the **EfficientNetV2-S** architecture.
 
-The model was iteratively refined across **14 training stages** — from an 81.13% baseline to a final **90.20% validation accuracy** — using modern augmentation strategies, SAM optimization, and Stochastic Weight Averaging. The final model is exported to **FP16 ONNX (38 MB)** and runs **live in the browser** via a standalone HTML interface with WebGPU acceleration.
+The model was iteratively refined across **14 training stages** — from an 81.13% baseline to a final **90.20% validation accuracy** — using modern augmentation strategies, SAM optimization, and Stochastic Weight Averaging. The final model is exported to **FP32 ONNX** and runs **live in the browser** via a standalone HTML interface with WebGPU acceleration.
 
 ---
 
@@ -111,8 +111,14 @@ pip install huggingface_hub
 python -c "
 from huggingface_hub import snapshot_download
 snapshot_download(
-    repo_id='brk9999/efficientnetv2-s-cifar100-fp16',
+    repo_id='brk9999/efficientnetv2-s-cifar100/best_weight',
     local_dir='pretrained_weights/'
+)
+# If you want to download the weights for all 12 training scripts (approximately 1.5 GB), use the following command:
+from huggingface_hub import snapshot_download
+snapshot_download(
+    repo_id='brk9999/efficientnetv2-s-cifar100/research_journey_weights',
+    local_dir='best_weights/'
 )
 "
 ```
@@ -180,11 +186,14 @@ Each stage has its own self-contained script, no arguments needed:
 
 ```bash
 # Stage 8.2 — Best single model (89.86%) ⭐
-python "research_journey/Test8/Code/cifar100_test8.py"
+python "research_journey/Test8/Code/cifar100_test8.py" The model typically reaches its peak validation accuracy between 10-20 epochs
 python "research_journey/Test8.1/Code/test8resume.py"
 python "research_journey/Test8.2/Code/test8resume2.py"
 
 ---
+##📈 Training Notes
+
+>Early Convergence: The model typically reaches its best validation accuracy within 10-20 epochs (observed in cifar100_test8.py), even though the total training is set to 200 epochs.
 
 ## 📤 Export Pipeline
 
@@ -219,31 +228,41 @@ Loads the FP16 ONNX model, runs full evaluation on CIFAR-100 test set, and gener
 The model runs **live in the browser** — no server, no Python, no installation required.
 
 ```bash
-cd UseMobile
-python -m http.server 8080
-# Open: http://localhost:8080
+cifar100-effnetv2-90.20acc-mobile-inference
+npx serve --cors -l 8080 
+# Open a new terminal
+cloudflared tunnel --url http://127.0.0.1:8080 --protocol http2 
 ```
 
-Or open `UseMobile/index.html` directly in Chrome / Edge / Firefox.
+Get the Public URL: After running the Cloudflare command(cloudflared tunnel --url http://127.0.0.1:8080 --protocol http2 ), look for a URL in the terminal that looks like https://xxx-xxx-xxx.trycloudflare.com.
+
+Open on Mobile: Open this link in your mobile browser.
+
+Navigate to the App: * Locate and click on the UseMobile folder.
+
+    Click on index.html to launch the inference interface.
+
+Wait for Initialization: * Grant camera permissions when prompted.
+
+    Please wait while the model loads (this may take a few moments depending on your connection).
 
 - Captures live camera feed and classifies every frame in real time
-- Runs via **WebGPU** → falls back to WebGL → falls back to WASM (CPU)
-- Displays predicted class name and live FPS counter
+- Runs via **WebGL** 
+- Displays predicted class name
 - Works completely offline after first load
 
 ---
 
 ## 📦 Model Weights
 
-All weights on HuggingFace: https://huggingface.co/brk9999/efficientnetv2-s-cifar100-fp16
+All weights on HuggingFace: https://huggingface.co/brk9999/efficientnetv2-s-cifar100
 
 | Checkpoint | Val Acc | Format | Size |
 |:---|:---:|:---:|:---:|
-| Stage 8.2 ⭐ Best | 89.86% | `.pth` | ~85 MB |
-| Stage 8.4 | 89.78% | `.pth` | ~85 MB |
-| SWA Merged | 89.81% | `.pth` | ~85 MB |
-| Final ONNX FP32 | 90.20% | `.onnx` | ~85 MB |
-| **Final ONNX FP16** | **90.20%** | **`.onnx`** | **38 MB** |
+| Stage 8.2 ⭐ Best | 89.86% | `.pth` 
+| Stage 8.4 | 89.78% | `.pth` 
+| SWA Merged | 89.81% | `.pth` 
+| **Final ONNX** | **90.20%** | **`.onnx`** |
 
 ---
 
