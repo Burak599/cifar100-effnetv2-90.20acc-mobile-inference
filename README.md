@@ -212,11 +212,11 @@ python "research_journey/Test8/Code/cifar100_test8.py" The model typically reach
 #Run this to view the XAI analysis after training Test 8.
 python "research_journey/Test8/XAI8/XAICode8.py"
 
-python "research_journey/Test8.1/Code/test8resume.py"
+python "research_journey/Test8Resume1/Code/test8resume.py"
 #Run this to view the XAI analysis after training Test 8.1.
 python "research_journey/Test8Resume1/XAI8.1/XAICode8.1.py"
 
-python "research_journey/Test8.2/Code/test8resume2.py"
+python "research_journey/Test8Resume2/Code/test8resume2.py"
 #Run this to view the XAI analysis after training Test 8.2.
 python "research_journey/Test8Resume2/XAI8.2/XAICode8.2.py"
 
