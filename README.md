@@ -114,7 +114,10 @@ snapshot_download(
     repo_id='brk9999/efficientnetv2-s-cifar100/best_weight',
     local_dir='pretrained_weights/'
 )
+"
+
 # If you want to download the weights for all 12 training scripts (approximately 1.5 GB), use the following command:
+python -c "
 from huggingface_hub import snapshot_download
 snapshot_download(
     repo_id='brk9999/efficientnetv2-s-cifar100/research_journey_weights',
