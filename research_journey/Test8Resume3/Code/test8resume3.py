@@ -21,7 +21,6 @@ BASE_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/research_jo
 WEIGHTS_DIR = os.path.join(BASE_PATH, "user_weights")
 PLOT_DIR = os.path.join(BASE_PATH, "user_plots")
 
-# 1. PRETRAINED_WEIGHT_PATH: Move up 2 levels (cd .. / cd ..), enter Test8Resume2, then enter Weights
 # This points to the previously trained model weights to start fine-tuning
 PRETRAINED_WEIGHT_PATH = os.path.abspath(os.path.join(BASE_PATH , "..", "Test8Resume2", "user_weights", "user_best_model_10.pth"))
 
