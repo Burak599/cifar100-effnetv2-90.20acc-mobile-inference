@@ -15,7 +15,7 @@ import os
 # --- PATH CONFIGURATION ---
 
 # Get the absolute path of the current directory where the script is located
-BASE_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/research_journey/Test8"
+BASE_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/research_journey/Test7"
 
 # Define output directories for organization
 WEIGHTS_DIR = os.path.join(BASE_PATH, "user_weights")
