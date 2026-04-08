@@ -267,6 +267,16 @@ Wait for Initialization: * Grant camera permissions when prompted.
 
     Please wait while the model loads (this may take a few moments depending on your connection).
 
+Note!!!: If you encounter a 1033 error when opening the link, please follow these steps:
+
+    Stop both the npx serve and cloudflared tunnel processes (Press Ctrl+C in your terminals).
+
+    First, run the command: npx serve --cors -l 8080.
+
+    Wait for 1 minute.
+
+    Then, run the command: cloudflared tunnel --url http://127.0.0.1:8080 --protocol http2.
+
 - Captures live camera feed and classifies every frame in real time
 - Runs via **WebGL** 
 - Displays predicted class name
