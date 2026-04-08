@@ -1,4 +1,4 @@
-# EfficientNetV2-S CIFAR-100 — SOTA-level Performance & Real-Time Mobile Inference (ONNX)
+# EfficientNetV2-S CIFAR-100 — SOTA-level Performance For EfficientNetV2-S & Real-Time Mobile Inference (ONNX)
 
 A production-grade EfficientNetV2-S pipeline achieving **90.20% validation accuracy** on CIFAR-100 using advanced optimization techniques including SAM and SWA — with real-time browser inference via ONNX, reaching **SOTA-level performance for EfficientNetV2-S**.
 > 🚀 **90.20% Accuracy | SOTA-level performance for EfficientNetV2-S | Real-Time Browser Inference**
