@@ -117,7 +117,7 @@ def get_gradcam_session(onnx_path: str):
 
     # Add the intermediate node as an extra graph output so ORT can return it
     intermediate_output = onnx.helper.make_tensor_value_info(
-        feat_name, onnx.TensorProto.FLOAT32, None
+        feat_name, onnx.TensorProto.FLOAT, None
     )
     model_onnx.graph.output.append(intermediate_output)
 
@@ -210,7 +210,7 @@ def compute_gradcam_onnx(session, input_name, feat_name, input_np, class_idx):
 
 
 # ===========================================================================
-# STEP 1 — FP16 ONNX INFERENCE TEST (accuracy)
+# STEP 1 — ONNX INFERENCE TEST (accuracy)
 # ===========================================================================
 
 def run_onnx_fp16_test(onnx_path: str):
