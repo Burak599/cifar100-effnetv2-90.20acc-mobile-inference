@@ -15,15 +15,16 @@ import os
 # --- PATH CONFIGURATION ---
 
 # Get the absolute path of the current directory where the script is located
-current_dir = os.path.dirname(os.path.abspath(__file__))
+BASE_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/research_journey/Test8Resume1"
 
-# 1. PRETRAINED_WEIGHT_PATH: Move up 2 levels (cd .. / cd ..), enter Test8, then enter Weights
+# Define output directories for organization
+WEIGHTS_DIR = os.path.join(BASE_PATH, "user_weights")
+PLOT_DIR = os.path.join(BASE_PATH, "user_plots")
+
+
 # This points to the previously trained model weights to start fine-tuning
-PRETRAINED_WEIGHT_PATH = os.path.abspath(os.path.join(current_dir, "..", "..", "Test8", "user_weights", "user_best_model_8.pth"))
+PRETRAINED_WEIGHT_PATH = os.path.abspath(os.path.join(BASE_PATH , "..", "Test8", "user_weights", "user_best_model_8.pth"))
 
-# Create output directories for weights and plots
-WEIGHTS_DIR = "user_weights"
-PLOT_DIR = "user_plots"
 os.makedirs(WEIGHTS_DIR, exist_ok=True)
 os.makedirs(PLOT_DIR, exist_ok=True)
 
@@ -345,7 +346,7 @@ def main():
 
     # --- TensorBoard Writer ---
     current_time = datetime.datetime.now().strftime("%b%d_%H-%M-%S")
-    log_dir = f"runs9/baseline_{current_time}"
+    log_dir = os.path.join(BASE_PATH, f"user_runs9/baseline_{current_time}")
     writer = SummaryWriter(log_dir)
 
     # ===================== TRAINING LOOP =====================
