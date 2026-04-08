@@ -99,6 +99,18 @@ source venv/bin/activate      # Linux/macOS
 
 ```bash
 pip install -r requirements.txt
+npm install -g serve
+# windows:
+winget install cloudflare.cloudflared
+
+# linux:
+curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb -o cloudflared.deb && sudo dpkg -i cloudflared.deb
+
+#Mac:
+brew install cloudflare/cloudflare/cloudflared
+
+#Note!!!: Node.js is required for npm commands.
+
 ```
 
 **4. Download pre-trained weights**
