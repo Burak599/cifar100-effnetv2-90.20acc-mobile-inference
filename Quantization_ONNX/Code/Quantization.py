@@ -39,7 +39,7 @@ if __name__ == "__main__":
     
     # Input Path: cd .. -> ONNX32Weights -> model_v1_mobile.onnx
     INPUT_ONNX = os.path.abspath(
-        os.path.join(current_dir, "..", "ONNX32Weights", "model_v1_mobile.onnx")
+        os.path.join(current_dir, ".."  ".." , "pretrained_weights", "model_fp32.onnx")
     )
     
     # Output Path: cd .. -> Weight_fp16 -> model_fp16.onnx
