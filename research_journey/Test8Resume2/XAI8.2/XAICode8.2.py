@@ -29,13 +29,13 @@ import cv2
 # ---------------------------------------------------------------------------
 
 # Directory where this script lives
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/research_journey/Test8Resume2"
 
-# Model checkpoint: go one level up, then into Weights/
-CHECKPOINT_PATH = os.path.join(SCRIPT_DIR, "..", "Weights", "best_model_10.pth")
+# Model checkpoint
+CHECKPOINT_PATH = os.path.join(BASE_PATH, "user_weights", "user_best_model_10.pth")
 
 # Output directory for all analysis artefacts
-XAI_DIR = os.path.join(SCRIPT_DIR, "XAI")
+XAI_DIR = os.path.join(BASE_PATH , "XAI8.2", "User_XAI")
 os.makedirs(XAI_DIR, exist_ok=True)
 
 # Number of most-confused pairs to display / save
@@ -518,7 +518,7 @@ def main():
     # --- Dataset & DataLoader ---
     # Using the standard CIFAR-100 test split as the validation set
     val_dataset = datasets.CIFAR100(
-        root=os.path.join(SCRIPT_DIR, "..", "..", "..", "data"), # İki kez üste çık ve data klasörüne gir
+        root="./data",
         train=False,
         download=True,
         transform=transform_val
