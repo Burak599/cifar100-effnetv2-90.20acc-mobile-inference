@@ -5,9 +5,7 @@ A production-grade EfficientNetV2-S pipeline achieving **90.20% validation accur
 
 ---
 
-<div align="center">
-<img src="assets/inference.gif" width="600">
-</div>
+![Demo](https://raw.githubusercontent.com/Burak599/cifar100-effnetv2-90.20acc-mobile-inference/master/assets/inference.gif)
 
 ## 📌 Overview
 
