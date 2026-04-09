@@ -1,7 +1,7 @@
-# CIFAR-100 — SOTA-level Performance For EfficientNetV2-S & Runs Fully On-Device (Mobile) — Real-Time Camera Inference in Browser
+# CIFAR-100 — EfficientNetV2-S @ 90.20% | Real-Time On-Device Inference in Browser (ONNX)
 
-A production-grade EfficientNetV2-S pipeline achieving **90.20% validation accuracy** on CIFAR-100 using advanced optimization techniques including SAM and SWA — with real-time browser inference via ONNX, reaching **SOTA-level performance for EfficientNetV2-S**.
-> 🚀 **90.20% Accuracy | SOTA-level performance for EfficientNetV2-S | Runs Fully On-Device (Mobile) — Real-Time Camera Inference in Browser**
+A production-grade EfficientNetV2-S pipeline achieving **90.20% validation accuracy** on CIFAR-100 using advanced optimization techniques including SAM and SWA — with real-time browser inference via ONNX, reaching 
+> 🚀 **90.20% Accuracy | Optimized EfficientNetV2-S | Runs Fully On-Device (Mobile) — Real-Time Camera Inference in Browser**
 
 ---
 
@@ -18,7 +18,7 @@ The model was iteratively refined across **13 training stages** — from an 81.1
 ## 💡 Why This Project Matters
 
 - Demonstrates **architecture-level optimization** rather than switching to larger models
-- Achieves **SOTA-level performance for EfficientNetV2-S**
+- Achieves **high accuracy with EfficientNetV2-S through advanced optimization**
 - End-to-end pipeline: training → explainability → deployment
 - Runs fully **in-browser with no backend required**
 
