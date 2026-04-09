@@ -14,29 +14,20 @@ import os
 
 # --- PATH CONFIGURATION ---
 
-# Get the absolute path of the current directory where the script is located
-BASE_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/research_journey/Test7"
+# --- PATH CONFIGURATION ---
 
-# Define output directories for organization
-WEIGHTS_DIR = os.path.join(BASE_PATH, "user_weights")
-PLOT_DIR = os.path.join(BASE_PATH, "user_plots")
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
-# Automatically create directories if they do not exist
+WEIGHTS_DIR = os.path.join(BASE_PATH, "..", "user_weights")
+PLOT_DIR = os.path.join(BASE_PATH, "..", "user_plots")
+
 os.makedirs(WEIGHTS_DIR, exist_ok=True)
 os.makedirs(PLOT_DIR, exist_ok=True)
 
-# 1. CHECKPOINT_SAVE_PATH: Saves the best model whenever validation loss improves
-CHECKPOINT_SAVE_PATH = os.path.join(WEIGHTS_DIR, "user_best_model_7.pth")
-
-# 2. LAST_CHECKPOINT_PATH: Rolling checkpoint for crash recovery (used in 'Resume from Checkpoint' block)
-LAST_CHECKPOINT_PATH = os.path.join(WEIGHTS_DIR, "user_last_checkpoint_7.pth")
-
-# 3. FINAL_MODEL_SAVE_PATH: Final model state_dict after the last epoch
-FINAL_MODEL_SAVE_PATH = os.path.join(WEIGHTS_DIR, "user_last_epochs_7.pth")
-
-# 4. PLOT_SAVE_PATH: Target path for the training performance (Acc/Loss) chart image
-PLOT_SAVE_PATH = os.path.join(PLOT_DIR, "user_training_history_plot_7.png")
-# --------------------------
+CHECKPOINT_SAVE_PATH    = os.path.join(WEIGHTS_DIR, "user_best_model_7.pth")
+LAST_CHECKPOINT_PATH    = os.path.join(WEIGHTS_DIR, "user_last_checkpoint_7.pth")
+FINAL_MODEL_SAVE_PATH   = os.path.join(WEIGHTS_DIR, "user_last_epochs_7.pth")
+PLOT_SAVE_PATH          = os.path.join(PLOT_DIR,    "user_training_history_plot_7.png")
 
 
 def seed_everything(seed=42):
@@ -451,7 +442,7 @@ def main():
 
     # --- TensorBoard Writer ---
     current_time = datetime.datetime.now().strftime("%b%d_%H-%M-%S")
-    log_dir = os.path.join(BASE_PATH, f"user_runs7/baseline_{current_time}")
+    log_dir = os.path.join(BASE_PATH, "..", f"user_runs7/baseline_{current_time}")
     writer = SummaryWriter(log_dir)
 
     # ===================== TRAINING LOOP =====================
