@@ -28,14 +28,18 @@ import cv2
 # PATH CONFIGURATION
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# PATH CONFIGURATION
+# ---------------------------------------------------------------------------
+
 # Directory where this script lives
-BASE_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/research_journey/BaseTest"
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 # Model checkpoint
-CHECKPOINT_PATH = os.path.join(BASE_PATH, "user_weights", "user_best_model.pth")
+CHECKPOINT_PATH = os.path.join(BASE_PATH, "..", "user_weights", "user_best_model.pth")
 
 # Output directory for all analysis artefacts
-XAI_DIR = os.path.join(BASE_PATH , "XAI_Base", "User_XAI")
+XAI_DIR = os.path.join(BASE_PATH, "..", "XAI_Base", "User_XAI")
 os.makedirs(XAI_DIR, exist_ok=True)
 
 # Number of most-confused pairs to display / save
