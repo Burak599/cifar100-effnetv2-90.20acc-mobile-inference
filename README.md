@@ -5,6 +5,8 @@ A production-grade EfficientNetV2-S pipeline achieving **90.20% validation accur
 
 ---
 
+<img src="assets/inferencegif.gif" width="450">
+
 ## 📌 Overview
 
 This project is a comprehensive deep learning pipeline designed to achieve **high accuracy** and **low-latency inference** on the CIFAR-100 dataset (100 classes, 60,000 images) using the **EfficientNetV2-S** architecture.
