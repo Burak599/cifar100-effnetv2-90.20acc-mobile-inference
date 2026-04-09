@@ -13,32 +13,27 @@ import random
 import os
 
 # --- PATH CONFIGURATION ---
-
 # Get the absolute path of the current directory where the script is located
-BASE_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/research_journey/Test8Resume1"
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 # Define output directories for organization
-WEIGHTS_DIR = os.path.join(BASE_PATH, "user_weights")
-PLOT_DIR = os.path.join(BASE_PATH, "user_plots")
-
+WEIGHTS_DIR = os.path.join(BASE_PATH, "..", "user_weights")
+PLOT_DIR    = os.path.join(BASE_PATH, "..", "user_plots")
 
 # This points to the previously trained model weights to start fine-tuning
-PRETRAINED_WEIGHT_PATH = os.path.abspath(os.path.join(BASE_PATH , "..", "Test8", "user_weights", "user_best_model_8.pth"))
+PRETRAINED_WEIGHT_PATH = os.path.abspath(os.path.join(BASE_PATH, "..", "..", "Test8", "user_weights", "user_best_model_8.pth"))
 
 os.makedirs(WEIGHTS_DIR, exist_ok=True)
 os.makedirs(PLOT_DIR, exist_ok=True)
 
 # 2. CHECKPOINT_SAVE_PATH: Saves the full training state whenever validation loss improves
-CHECKPOINT_SAVE_PATH = os.path.join(WEIGHTS_DIR, "user_best_model_9.pth")
-
+CHECKPOINT_SAVE_PATH  = os.path.join(WEIGHTS_DIR, "user_best_model_9.pth")
 # 3. LAST_CHECKPOINT_PATH: Rolling checkpoint updated every epoch for crash recovery
-LAST_CHECKPOINT_PATH = os.path.join(WEIGHTS_DIR, "user_last_checkpoint_9.pth")
-
+LAST_CHECKPOINT_PATH  = os.path.join(WEIGHTS_DIR, "user_last_checkpoint_9.pth")
 # 4. FINAL_MODEL_SAVE_PATH: Saves only the model state_dict after the final epoch
 FINAL_MODEL_SAVE_PATH = os.path.join(WEIGHTS_DIR, "user_last_epochs_9.pth")
-
 # 5. PLOT_SAVE_PATH: File path to save the training/validation curves as an image
-PLOT_SAVE_PATH = os.path.join(PLOT_DIR, "user_training_history_plot_9.png")
+PLOT_SAVE_PATH        = os.path.join(PLOT_DIR,    "user_training_history_plot_9.png")
 # --------------------------
 
 
@@ -346,7 +341,7 @@ def main():
 
     # --- TensorBoard Writer ---
     current_time = datetime.datetime.now().strftime("%b%d_%H-%M-%S")
-    log_dir = os.path.join(BASE_PATH, f"user_runs9/baseline_{current_time}")
+    log_dir = os.path.join(BASE_PATH, "..", f"user_runs9/baseline_{current_time}")
     writer = SummaryWriter(log_dir)
 
     # ===================== TRAINING LOOP =====================
