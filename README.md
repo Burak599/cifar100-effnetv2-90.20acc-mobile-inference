@@ -91,8 +91,8 @@ matplotlib>=3.7.0
 **1. Clone the repository**
 
 ```bash
-git clone https://github.com/Burak599/cifar100-effnetv2s-90.20acc-mobile-inference.git
-cd cifar100-effnetv2s-90.20acc-mobile-inference
+git clone https://github.com/Burak599/cifar100-effnetv2-90.20acc-mobile-inference.git
+cd cifar100-effnetv2-90.20acc-mobile-inference
 ```
 
 **2. Create a virtual environment**
