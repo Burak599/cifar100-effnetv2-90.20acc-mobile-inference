@@ -8,10 +8,15 @@ from tqdm import tqdm
 import os
 import random
 
-# --- PATH CONFIGURATION (Senin Klasör Düzenine Göre) ---
-current_dir = os.path.dirname(os.path.abspath(__file__))
-# cd .. yapıp Weight_fp16 klasöründeki model_fp16.onnx dosyasına gidiyoruz
-FP16_ONNX_PATH = os.path.abspath(os.path.join(current_dir, "..", "Weight_fp16", "model_fp16.onnx"))
+# --- PATH CONFIGURATION (Fixed Absolute Paths) ---
+# Your fixed base path for FP16 weights
+BASE_FP16_PATH = os.path.dirname(os.path.abspath(__file__))
+
+# Fixed path to the FP16 model file
+FP16_ONNX_PATH = os.path.join(BASE_FP16_PATH, "..", "Weight_fp16", "user_model_fp16.onnx")
+
+# Data directory path
+DATA_ROOT = "./data"
 # --------------------------
 
 # ==========================================
@@ -35,7 +40,6 @@ def run_onnx_fp16_test(onnx_path=FP16_ONNX_PATH):
     ]
     
     try:
-        # Senin sisteminde çalışan providers listesini aynen geçiyoruz
         session = ort.InferenceSession(onnx_path, providers=providers)
         print(f"--> FP16 Model Loaded Successfully: {onnx_path}")
     except Exception as e:
@@ -52,8 +56,7 @@ def run_onnx_fp16_test(onnx_path=FP16_ONNX_PATH):
     ])
     
     test_set = torchvision.datasets.CIFAR100(root='./data', train=False, download=True, transform=val_transform)
-    # Batch size 64 kalsın, madem sende bu hızlı çalışıyor bozmayalım
-    test_loader = DataLoader(test_set, batch_size=64, shuffle=False, num_workers=8, pin_memory=True)
+    test_loader = DataLoader(test_set, batch_size=1, shuffle=False, num_workers=8, pin_memory=True)
 
     correct = 0
     total = 0
@@ -65,7 +68,6 @@ def run_onnx_fp16_test(onnx_path=FP16_ONNX_PATH):
     # 3. Inference Loop
     with torch.no_grad():
         for inputs, targets in tqdm(test_loader, desc="Testing FP16 Model"):
-            # Önemli: inputs_np float32 kalmalı (model girişi float32 bekliyor)
             inputs_np = inputs.numpy()
             
             # Forward pass
