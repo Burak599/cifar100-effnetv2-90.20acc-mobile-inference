@@ -5,7 +5,7 @@ A production-grade EfficientNetV2-S pipeline achieving **90.20% validation accur
 
 ---
 
-<img src="assets/inferencegif.gif" width="450">
+<img src="assets/inferencegif" width="450">
 
 ## 📌 Overview
 
