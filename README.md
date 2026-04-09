@@ -1,6 +1,6 @@
 # CIFAR-100 — EfficientNetV2-S @ 90.20% | Real-Time On-Device Inference in Browser (ONNX)
 
-A production-grade EfficientNetV2-S pipeline achieving **90.20% validation accuracy** on CIFAR-100 using advanced optimization techniques including SAM and SWA — with real-time browser inference via ONNX, reaching 
+A production-grade EfficientNetV2-S pipeline achieving **90.20% validation accuracy** on CIFAR-100 using advanced optimization techniques including SAM and SWA — with real-time browser inference via ONNX. 
 > 🚀 **90.20% Accuracy | Optimized EfficientNetV2-S | Runs Fully On-Device (Mobile) — Real-Time Camera Inference in Browser**
 
 ---
