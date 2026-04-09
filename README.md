@@ -264,7 +264,6 @@ The model runs **live in the browser** — no server, no Python, no installation
 - Real-time camera-based classification
 
 ```bash
-cd cifar100-effnetv2-90.20acc-mobile-inference
 npx serve --cors -l 8080 
 # Open a new terminal
 cloudflared tunnel --url http://127.0.0.1:8080 --protocol http2 
