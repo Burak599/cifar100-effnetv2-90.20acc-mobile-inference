@@ -544,6 +544,14 @@ def main():
     print(f"  ALL OUTPUTS SAVED TO: {XAI_DIR}")
     print("=" * 60)
 
+    print("\n" + "=" * 60)
+    print(f"  ALL OUTPUTS SAVED TO: {XAI_DIR}")
+    print(f"  ONNX PATH       : {CHECKPOINT_PATH}")
+    print(f"  TOTAL SAMPLES   : {len(all_labels)}")
+    print(f"  CORRECT MATCHES : {(all_preds == all_labels).sum()}")
+    print(f"  MODEL ACCURACY  : {100.0 * (all_preds == all_labels).sum() / len(all_labels):.2f}%")
+    print("=" * 60)
+
 
 if __name__ == "__main__":
     main()
