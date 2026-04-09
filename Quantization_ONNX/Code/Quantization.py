@@ -34,24 +34,18 @@ def optimize_onnx_to_fp16(input_path, output_path):
         print(f"❌ Error: {str(e)}")
 
 if __name__ == "__main__":
-    # --- PATHS (cd .. logic as requested) ---
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # Input Path: cd .. -> ONNX32Weights -> model_v1_mobile.onnx
-    INPUT_ONNX = os.path.abspath(
-        os.path.join(current_dir, ".."  ".." , "pretrained_weights", "model_fp32.onnx")
-    )
-    
-    # Output Path: cd .. -> Weight_fp16 -> model_fp16.onnx
-    OUTPUT_DIR = os.path.abspath(
-        os.path.join(current_dir, "..", "Weight_fp16")
-    )
-    
-    if not os.path.exists(OUTPUT_DIR):
-        os.makedirs(OUTPUT_DIR)
-        
-    FINAL_OUTPUT_PATH = os.path.join(OUTPUT_DIR, "model_fp16.onnx")
-    
+    # Define absolute paths
+    BASE_INPUT_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/ONNX/ONNX_Weight"
+    BASE_OUTPUT_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/Quantization_ONNX/Weight_fp16"
+
+    # Construct file paths
+    INPUT_ONNX = os.path.join(BASE_INPUT_PATH, "user_model_fp32.onnx")
+    FINAL_OUTPUT_PATH = os.path.join(BASE_OUTPUT_PATH, "user_model_fp16.onnx")
+
+    # Ensure output directory exists
+    if not os.path.exists(BASE_OUTPUT_PATH):
+        os.makedirs(BASE_OUTPUT_PATH)
+
     if os.path.exists(INPUT_ONNX):
         optimize_onnx_to_fp16(INPUT_ONNX, FINAL_OUTPUT_PATH)
     else:
