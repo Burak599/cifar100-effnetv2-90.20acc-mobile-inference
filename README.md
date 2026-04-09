@@ -224,6 +224,10 @@ Note: If you provide the runs path of another script, it will also work for othe
 Each stage has its own self-contained script, no arguments needed:
 
 ```bash
+# For the correct path:
+cd ..
+cd ..
+
 # Stage 8.2 — Best single model (89.86%) ⭐
 python "research_journey/Test8/Code/cifar100_test8.py"
 #Run this to view the XAI analysis after training Test 8.
