@@ -37,7 +37,6 @@ def convert_to_onnx(checkpoint_path, output_path="user_model_fp32.onnx"):
 
         training=torch.onnx.TrainingMode.EVAL,
 
-        # 🔥 KRİTİK: yeni exporter KULLANMA
         dynamo=False
     )
 
