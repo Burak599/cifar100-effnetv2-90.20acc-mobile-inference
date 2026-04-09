@@ -29,14 +29,23 @@ import cv2
 # ---------------------------------------------------------------------------
 
 # Directory where this script lives
-BASE_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/research_journey/Test6"
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 # Model checkpoint
-CHECKPOINT_PATH = os.path.join(BASE_PATH, "user_weights", "user_best_model_6.pth")
+CHECKPOINT_PATH = os.path.join(BASE_PATH, "..", "user_weights", "user_best_model_6.pth")
 
 # Output directory for all analysis artefacts
-XAI_DIR = os.path.join(BASE_PATH , "XAI6", "User_XAI")
+XAI_DIR = os.path.join(BASE_PATH, "..", "XAI6", "User_XAI")
 os.makedirs(XAI_DIR, exist_ok=True)
+
+# Number of most-confused pairs to display / save
+TOP_N_CONFUSED_PAIRS = 20
+
+# Number of Grad-CAM sample images to generate per class (set to 1 for a quick overview)
+GRADCAM_SAMPLES = 5
+
+# Batch size for inference (no gradient storage needed, so can be larger)
+BATCH_SIZE = 64
 
 # Number of most-confused pairs to display / save
 TOP_N_CONFUSED_PAIRS = 20
