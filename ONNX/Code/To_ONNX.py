@@ -4,7 +4,7 @@ import torch.nn as nn
 import os
 import onnx
 
-def convert_to_onnx(checkpoint_path, output_path="model_final.onnx"):
+def convert_to_onnx(checkpoint_path, output_path="user_model_fp32.onnx"):
 
     # Model
     model = models.efficientnet_v2_s(weights=None)
@@ -26,7 +26,7 @@ def convert_to_onnx(checkpoint_path, output_path="model_final.onnx"):
         output_path,
 
         export_params=True,
-        opset_version=18,  # 🔥 kritik (17 sıkıntılı)
+        opset_version=18,
 
         do_constant_folding=True,
 
@@ -56,9 +56,17 @@ def convert_to_onnx(checkpoint_path, output_path="model_final.onnx"):
 
 
 if __name__ == "__main__":
-    base = os.path.dirname(os.path.abspath(__file__))
-    CHECKPOINT_PATH = os.path.abspath(
-        os.path.join(base, "..", "..", "research_journey", "Test8Resume2", "user_weights", "user_best_model_10.pth")
-    )
 
-    convert_to_onnx(CHECKPOINT_PATH)
+    # Define the absolute base path for weights
+    # This ensures the script finds the model regardless of where it's executed from
+    BASE_WEIGHTS_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/research_journey/Test8Resume1/user_weights"
+    BASE_OUTPUT_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/ONNX/ONNX_Weight"
+
+    # Construct the full path to the specific checkpoint
+    CHECKPOINT_PATH = os.path.join(BASE_WEIGHTS_PATH, "user_best_model_9.pth")
+    ONNX_OUTPUT_PATH = os.path.join(BASE_OUTPUT_PATH, "user_model_fp32.onnx")
+
+    if not os.path.exists(BASE_OUTPUT_PATH):
+        os.makedirs(BASE_OUTPUT_PATH)
+
+    convert_to_onnx(CHECKPOINT_PATH, ONNX_OUTPUT_PATH)
