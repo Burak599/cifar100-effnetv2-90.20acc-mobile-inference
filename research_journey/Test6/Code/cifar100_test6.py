@@ -12,27 +12,19 @@ import numpy as np
 import random
 import os
 
-# Get the absolute path of the current directory where the script is located
-BASE_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/research_journey/Test6"
+# --- PATH CONFIGURATION ---
 
-# Define output directories for organization
-WEIGHTS_DIR = os.path.join(BASE_PATH, "user_weights")
-PLOT_DIR = os.path.join(BASE_PATH, "user_plots")
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
-# Automatically create directories if they do not exist
+WEIGHTS_DIR = os.path.join(BASE_PATH, "..", "user_weights")
+PLOT_DIR = os.path.join(BASE_PATH, "..", "user_plots")
+
 os.makedirs(WEIGHTS_DIR, exist_ok=True)
 os.makedirs(PLOT_DIR, exist_ok=True)
 
-# 1. CHECKPOINT_SAVE_PATH: Saves the full training state (optimizer, scheduler, weights) 
-# whenever validation loss reaches a new minimum.
-CHECKPOINT_SAVE_PATH = os.path.join(WEIGHTS_DIR, "user_best_model_6.pth")
-
-# 2. FINAL_MODEL_SAVE_PATH: Saves only the model state_dict after the final epoch.
-FINAL_MODEL_SAVE_PATH = os.path.join(WEIGHTS_DIR, "user_last_epochs_6.pth")
-
-# 3. PLOT_SAVE_PATH: The file path where the training and validation Accuracy/Loss curves will be saved.
-PLOT_SAVE_PATH = os.path.join(PLOT_DIR, "user_training_history_plot_6.png")
-# --------------------------
+CHECKPOINT_SAVE_PATH    = os.path.join(WEIGHTS_DIR, "user_best_model_6.pth")
+FINAL_MODEL_SAVE_PATH   = os.path.join(WEIGHTS_DIR, "user_last_epochs_6.pth")
+PLOT_SAVE_PATH          = os.path.join(PLOT_DIR,    "user_training_history_plot_6.png")
 
 
 def seed_everything(seed=42):
@@ -429,7 +421,7 @@ def main():
 
     # --- TensorBoard Writer ---
     current_time = datetime.datetime.now().strftime("%b%d_%H-%M-%S")
-    log_dir = os.path.join(BASE_PATH, f"user_runs6/baseline_{current_time}")
+    log_dir = os.path.join(BASE_PATH, "..", f"user_runs6/baseline_{current_time}")
     writer = SummaryWriter(log_dir)
 
     # ===================== TRAINING LOOP =====================
