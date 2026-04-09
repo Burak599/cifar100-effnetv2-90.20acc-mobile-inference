@@ -55,17 +55,14 @@ def convert_to_onnx(checkpoint_path, output_path="user_model_fp32.onnx"):
 
 
 if __name__ == "__main__":
+    SCRIPT_DIR   = os.path.dirname(os.path.abspath(__file__))
+    PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
 
-    # Define the absolute base path for weights
-    # This ensures the script finds the model regardless of where it's executed from
-    BASE_WEIGHTS_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/research_journey/Test8Resume1/user_weights"
-    BASE_OUTPUT_PATH = "/home/burak/cifar100-effnetv2-90.20acc-mobile-inference/ONNX/ONNX_Weight"
+    BASE_WEIGHTS_PATH = os.path.join(PROJECT_ROOT, "research_journey", "Test8Resume2", "user_weights")
+    BASE_OUTPUT_PATH  = os.path.join(PROJECT_ROOT, "ONNX", "ONNX_Weight")
 
-    # Construct the full path to the specific checkpoint
-    CHECKPOINT_PATH = os.path.join(BASE_WEIGHTS_PATH, "user_best_model_9.pth")
-    ONNX_OUTPUT_PATH = os.path.join(BASE_OUTPUT_PATH, "user_model_fp32.onnx")
+    CHECKPOINT_PATH  = os.path.join(BASE_WEIGHTS_PATH, "user_best_model_10.pth")
+    ONNX_OUTPUT_PATH = os.path.join(BASE_OUTPUT_PATH,  "user_model_fp32.onnx")
 
-    if not os.path.exists(BASE_OUTPUT_PATH):
-        os.makedirs(BASE_OUTPUT_PATH)
-
+    os.makedirs(BASE_OUTPUT_PATH, exist_ok=True)
     convert_to_onnx(CHECKPOINT_PATH, ONNX_OUTPUT_PATH)
