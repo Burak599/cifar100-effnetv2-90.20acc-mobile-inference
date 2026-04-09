@@ -48,7 +48,6 @@ CIFAR100Project/
 ├── ONNX/
 │   └── Code/
 │       ├── To_ONNX.py
-│       └── ONNXTest.py
 ├── Quantization_ONNX/
 │   └── Code/
 │       ├── Quantization.py
@@ -172,6 +171,15 @@ cd ModelLastTest/Code
 python best_model_Test.py
 ```
 
+## 💡 Tensorboard
+
+**To view the model's TensorBoard results:**
+
+```bash
+tensorboard --logdir=~/cifar100-effnetv2-90.20acc-mobile-inference/research_journey/Test8Resume2/runs10
+```
+Note: If you provide the runs path of another script, it will also work for other scripts.
+
 ---
 
 ## 📊 Results — From 81% → 90.20%
@@ -229,6 +237,8 @@ python "research_journey/Test8Resume2/Code/test8resume2.py"
 #Run this to view the XAI analysis after training Test 8.2.
 python "research_journey/Test8Resume2/XAI8.2/XAICode8.2.py"
 
+#Note!!!: If you provide the path of another script, you can also train using the features of other scripts.
+
 
 ---
 
@@ -242,13 +252,10 @@ python "research_journey/Test8Resume2/XAI8.2/XAICode8.2.py"
 # Step 1 — PyTorch → ONNX FP32
 python "ONNX/Code/To_ONNX.py"
 
-# Step 2 — Test ONNX FP32
-python "ONNX/Code/ONNXTest.py"
-
-# Step 3 — ONNX FP32 → FP16 (38 MB)
+# Step 2 — ONNX FP32 → FP16 (38 MB)
 python "Quantization_ONNX/Code/Quantization.py"
 
-# Step 4 — Test ONNX FP16
+# Step 3 — Test ONNX FP16
 python "Quantization_ONNX/Code/QuantizationTest.py"
 ```
 
